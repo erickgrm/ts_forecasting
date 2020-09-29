@@ -1,5 +1,3 @@
-
-
 from statsmodels.tsa.arima_model import ARMA 
 from statsmodels.tsa.arima_model import ARIMA
 
