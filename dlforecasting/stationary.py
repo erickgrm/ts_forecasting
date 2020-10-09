@@ -1,4 +1,5 @@
 import statsmodels.api as sm
+import numpy as np
 
 class Stationarity(object):
     
@@ -7,8 +8,9 @@ class Stationarity(object):
         self.d = 0
         self.kpss_stationary = False
         self.adf_stationary = False
+        self.baselines = []
     
-    def fit(self, timeseries, alpha=0.05, verbose=True):
+    def test(self, timeseries, alpha=0.05, verbose=True):
         
         self.tested = True
     
@@ -32,17 +34,19 @@ class Stationarity(object):
             
     
     def transform(self, timeseries, max_diff=3):        
-        flag = False
         ts = timeseries
         while not(self.kpss_stationary and self.adf_stationary) and self.d < max_diff:
             print('>> ',self.d+1,'differencing')
+            self.baselines.append(ts[0])
             ts = ts[1:]-ts[:-1]
-            self.fit(ts, alpha=0.05, verbose=True)
+            self.test(ts, alpha=0.05, verbose=True)
             self.d += 1        
         return ts
     
-    def fit_transform(self, timeseries, alpha=0.05, verbose=True, max_diff=3):
-        self.fit(timeseries, alpha=alpha, verbose=verbose)
+
+    def test_transform(self, timeseries, alpha=0.05, verbose=True, max_diff=3):
+        self.test(timeseries, alpha=alpha, verbose=verbose)
         
         return self.transform(timeseries, max_diff=max_diff)
     
+
